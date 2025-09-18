@@ -28,3 +28,10 @@ Stats, inventory, health, and accomplishments are recorded in text files. _Nothi
 _Technically,_ this bot is model agnostic; any model that generates text can be used, but only if they follow instructions well. The system works reasonably reliably with gemma3:27b, but the systemPromptRunning.txt may need to be adjusted for other models to make them play nice.
 
 temperature and repeat penalty may also need to be adjusted in order to get good results with different models.
+
+planned features:
+- room theme requests
+- backstory, race, and other character requests
+- generated puzzles and solutions, with prizes
+- starting stat and equipment requests
+- uncensored model
