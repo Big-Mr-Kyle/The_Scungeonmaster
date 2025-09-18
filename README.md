@@ -13,7 +13,7 @@ required permissions:
 - read usernames
 - create and manage threads
 
-Make sure you install dependancies using "pnpm install".
+Make sure you install dependancies using "npm install".
 After making a discord bot and creating a config.json using the txt template, run the bot with 'node .' from the main project directory.
 Then, he'll behave like a normal chat bot, until someone expresses that they'd like to play a game with him. Then, he _should_ create a thread and add the player.
 He currently only supports a single player at a time and won't respond to other users during a game.
