@@ -1,2 +1,2 @@
 # The_Scungeonmaster
-A small, limited-scope text adventure bot that runs locally using Ollama.
+A small, limited-scope text adventure discord bot that runs locally using Ollama.
