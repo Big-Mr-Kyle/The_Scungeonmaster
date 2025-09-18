@@ -1,0 +1,3 @@
+afflictions:
+Custard Coating
+Deep Wound

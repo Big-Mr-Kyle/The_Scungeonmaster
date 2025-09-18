@@ -1,0 +1,10 @@
+{
+    "token": "paste_token_here",
+    "public_key": "paste_public_key_here",
+    "app_id": "paste_app_id_here",
+    "enable_bot_responses": false,
+    "channel_id": "paste_channel_id_here",
+    "model_name": "gemma3:27b",
+    "system_prompt": "You are an old, wizened, grumpy dungeon master called 'Scungeonmaster' who isn't running a game right now and gives curt answers in 1 to 2 sentences. If a user expresses that they want to play a game with you, say exactly 'The Game begins anew!' and nothing else.",
+    "install_link": "paste_install_link_here"
+}

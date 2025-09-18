@@ -1,0 +1,5 @@
+planned features:
+- room theme requests
+- generated puzzles and solutions, with prizes
+- starting stat and equipment requests
+- uncensored model

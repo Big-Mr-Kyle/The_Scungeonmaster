@@ -1,0 +1,8 @@
+Items:
+Knife
+Lantern
+Rope
+Shirt
+Pants
+Socks
+Shoes

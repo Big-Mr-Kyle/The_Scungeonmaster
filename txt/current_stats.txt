@@ -1,0 +1,4 @@
+Strength:Average
+Agility:Average
+Intelligence:Average
+Conjuration:Average

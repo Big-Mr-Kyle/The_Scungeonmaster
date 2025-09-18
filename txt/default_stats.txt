@@ -1,0 +1,3 @@
+Strength: Average
+Agility: Average
+Intelligence: Average
