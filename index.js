@@ -390,66 +390,89 @@ client.on("messageCreate", async (message) => {
         console.log("[UPDATE] Stats file updated with new stats.");
       }
     }
-    //inventory handling
+    // Inventory handling
+    // Remove items: capture only the content after the trigger phrase, support multiple occurrences
     if (answer.includes("You have lost:")) {
-      let regex1 = /You have lost:\s*(.+)/;
-      let match1 = answer.match(regex1) || [];
-      if (match1.length > 0) {
-        for (let i = 0; i < match1.length; i++) {
-          let currentInventory = readFileSync(
-            new URL("./txt/current_inventory.txt", import.meta.url),
-            "utf8"
+      const lostRegex = /You have lost:\s*([^\n]+)/g;
+      const itemsToRemove = [];
+      let m;
+      while ((m = lostRegex.exec(answer)) !== null) {
+        const content = m[1].trim();
+        if (!content) continue;
+        // Split simple conjunctions like "Item A and Item B"
+        const parts = content
+          .split(/\s+and\s+/i)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+        if (parts.length > 0) itemsToRemove.push(...parts);
+        else itemsToRemove.push(content);
+      }
+      if (itemsToRemove.length > 0) {
+        let currentInventory = readFileSync(
+          new URL("./txt/current_inventory.txt", import.meta.url),
+          "utf8"
+        );
+        const lines = currentInventory.split("\n");
+        const actuallyRemoved = [];
+        // Remove only the first matching occurrence for each requested item
+        for (const rem of itemsToRemove) {
+          const idx = lines.findIndex((itemLine) => {
+            const line = itemLine.trim();
+            if (line === "") return false;
+            return line === rem;
+          });
+          if (idx !== -1) {
+            lines.splice(idx, 1);
+            actuallyRemoved.push(rem);
+          }
+        }
+        const sanitized = lines.filter((l) => l.trim() !== "");
+        updateInventory(sanitized.join("\n"));
+        if (actuallyRemoved.length > 0) {
+          console.log(
+            "[UPDATE] Inventory updated, removed item(s):",
+            actuallyRemoved.join(", ")
           );
-          let newInventory = currentInventory
-            .split("\n")
-            // Remove any inventory line that contains the lost item substring
-            // (previously removed only exact matches)
-            .filter((item) => !item.includes(match1[i]))
-            .join("\n");
-          updateInventory(newInventory);
-          console.log("[UPDATE] Inventory updated, removed item:", match1[i]);
+        } else {
+          console.log(
+            "[UPDATE] No matching items found to remove for:",
+            itemsToRemove.join(", ")
+          );
         }
       }
     }
-    // this is writting the whole line and the item to the file. fix that later.
+
+    // Add items: capture only the content after the trigger phrase, support multiple occurrences
     if (answer.includes("You have gained an item:")) {
-      let regex2 = /You have gained an item:\s*(.+)/;
-      let match2 = answer.match(regex2) || [];
-      for (let i = 0; i < match2.length; i++) {
-        if (match2[i] && match2[i].includes(" and ")) {
-          let splitItems = match2[i].split(" and ");
-          for (let j = 0; j < splitItems.length; j++) {
-            let currentInventory = readFileSync(
-              new URL("./txt/current_inventory.txt", import.meta.url),
-              "utf8"
-            );
-            let newInventory = currentInventory + "\n" + splitItems[j];
-            updateInventory(newInventory);
-            console.log(
-              "[UPDATE] Inventory updated with new item:",
-              splitItems[j]
-            );
-          }
-          match2[i] = null; // Mark as processed
-        } else if (match2[i]) {
-          let currentInventory = readFileSync(
-            new URL("./txt/current_inventory.txt", import.meta.url),
-            "utf8"
-          );
-          let newInventory = currentInventory + "\n" + match2[i];
-          updateInventory(newInventory);
-          console.log("[UPDATE] Inventory updated with new item:", match2[i]);
-        }
+      const gainedRegex = /You have gained an item:\s*([^\n]+)/g;
+      const itemsToAdd = [];
+      let m;
+      while ((m = gainedRegex.exec(answer)) !== null) {
+        const content = m[1].trim();
+        if (!content) continue;
+        // Split simple conjunctions like "Item A and Item B"
+        const parts = content
+          .split(/\s+and\s+/i)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+        if (parts.length > 0) itemsToAdd.push(...parts);
+        else itemsToAdd.push(content);
       }
-      // if (match2[1]) {
-      //   let currentInventory = readFileSync(
-      //     new URL("./txt/current_inventory.txt", import.meta.url),
-      //     "utf8"
-      //   );
-      //   let newInventory = currentInventory + "\n" + match2[1];
-      //   updateInventory(newInventory);
-      //   console.log("[UPDATE] Inventory updated with new item:", match2[1]);
-      // }
+      if (itemsToAdd.length > 0) {
+        let currentInventory = readFileSync(
+          new URL("./txt/current_inventory.txt", import.meta.url),
+          "utf8"
+        );
+        const prefix = currentInventory && !currentInventory.endsWith("\n")
+          ? currentInventory + "\n"
+          : currentInventory;
+        const newInventory = (prefix || "") + itemsToAdd.join("\n");
+        updateInventory(newInventory);
+        console.log(
+          "[UPDATE] Inventory updated with new item(s):",
+          itemsToAdd.join(", ")
+        );
+      }
     }
     //accomplishments handling (multi-occurrence)
     if (answer.includes("You have accomplished:")) {
